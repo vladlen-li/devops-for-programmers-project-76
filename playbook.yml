@@ -1,32 +1,44 @@
-- hosts: all
-  become: yes
+- name: Setup Redmine Application
+  hosts: all
+  become: true
+  roles:
+    - role: geerlingguy.pip
+    - role: geerlingguy.docker
   pre_tasks:
     - name: Apt update
-      apt:
-        update_cache: yes
+      ansible.builtin.apt:
+        update_cache: true
   tasks:
-    - name: Create env directory
-      file:
-        path: "{{ env_file_path }}"
-        state: directory
-        mode: '0755'
     - name: Generate .env file from template
-      template:
+      ansible.builtin.template:
         src: templates/redmine.env.j2
-        dest: "{{ env_file_path }}/redmine.env"
+        dest: "/tmp/redmine.env"
         mode: '0640'
     - name: Launch Redmine Container
-      docker_container:
+      community.docker.docker_container:
         name: redmine
         image: "{{ redmine_image }}"
         state: started
         restart_policy: always
         ports:
           - "{{ redmine_port }}:3000"
-        env_file: "{{ env_file_path }}/redmine.env"
+        env_file: "/tmp/redmine.env"
         volumes:
           - "/usr/src/redmine/files:/usr/src/redmine/files"
 
-  roles:
-    - geerlingguy.pip
-    - geerlingguy.docker
+- name: Configure Datadog Agent on Webservers
+  hosts: webservers
+  become: true
+  tasks:
+    - name: Import the Datadog Agent role
+      ansible.builtin.import_role:
+        name: datadog.dd.agent
+    - name: Generate health_check conf.yaml file from template
+      ansible.builtin.template:
+        src: templates/conf.yaml.j2
+        dest: "/etc/datadog-agent/conf.d/http_check.d/conf.yaml"
+        mode: '0640'
+    - name: Restart Datadog agent
+      ansible.builtin.systemd:
+        name: datadog-agent
+        state: restarted

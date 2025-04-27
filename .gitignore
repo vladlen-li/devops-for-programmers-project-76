@@ -2,3 +2,4 @@
 .vault_pass.txt
 *.env
 get_vault_key
+.tmp
