@@ -1,31 +1,22 @@
 #!/bin/bash
-
-if [ -z "$REDMINE_DB_NAME" ]; then
-  echo "ERROR: The environment variable REDMINE_DB_NAME is not set."
+key_file="get_vault_key"
+if [ ! -f "$key_file" ]; then
+  echo "ERROR: vault key not found: $key_file"
   exit 1
-else
-  echo "REDMINE_DB_NAME is set to: $REDMINE_DB_NAME"
 fi
 
-if [ -z "$REDMINE_DB_USER" ]; then
-  echo "ERROR: The environment variable REDMINE_DB_USER is not set."
+if [ -z "$DATABASE_NAME" ]; then
+  echo "ERROR: The environment variable DATABASE_NAME is not set."
   exit 1
 else
-  echo "REDMINE_DB_USER is set to: $REDMINE_DB_USER"
+  echo "DATABASE_NAME is set"
 fi
 
-if [ -z "$REDMINE_DB_PASSWORD" ]; then
-  echo "ERROR: The environment variable REDMINE_DB_PASSWORD is not set."
+if [ -z "$DATABASE_HOST" ]; then
+  echo "ERROR: The environment variable DATABASE_HOST is not set."
   exit 1
 else
-  echo "REDMINE_DB_PASSWORD is set."
-fi
-
-if [ -z "$REDMINE_DB_HOST" ]; then
-  echo "ERROR: The environment variable REDMINE_DB_HOST is not set."
-  exit 1
-else
-  echo "REDMINE_DB_HOST is set."
+  echo "DATABASE_HOST is set."
 fi
 
 echo "All checks passed."

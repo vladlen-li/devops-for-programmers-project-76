@@ -22,12 +22,20 @@
 Создайте файл `.env` в корне проекта со следующим содержимым:
 
 ```dotenv
-REDMINE_DB_NAME=db_name
-REDMINE_DB_USER=db_user
-REDMINE_DB_PASSWORD=db-password
-REDMINE_DB_HOST=127.0.0.1
+DATABASE_NAME=name
+DATABASE_HOST=127.0.0.1
+REDMINE_EXTERNAL_PORT=80
 ```
 
+### Шаг 2. Подготовте файл с ключом шифрования для ansible-vault
+Создайте скрипт `get_vault_key`, который будет выводить ключ шифрования
+
+```bash
+#!/bin/bash
+echo "here_is_your_key"
+```
+
+В случае утери ключа, придётся пересоздавать и шифровать файлы .*/vault.yml заново
 
 ### Шаг 2. Запустите деплой
 
@@ -43,13 +51,22 @@ make start
 
 3. Запустит Playbook (prepare)
 
-## 4. Остановка сервисов
+
+## 3. Остановка сервисов
 
 Для остановки сервисов, выполните команду
 ```
-make ansible-destroy
+make destroy
 ```
 которая уничтожит докер контейнеры
 
 ## Адрес сервера для задания 
 https://koala610.kz
+
+### Дополнительно
+
+В случае остановки базы, можно выполнить команду 
+```
+make start-db
+```
+которая создаст новый контейнер с mysql на выделенном хосте

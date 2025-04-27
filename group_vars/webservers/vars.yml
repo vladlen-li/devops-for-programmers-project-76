@@ -1,0 +1,5 @@
+redmine_image: redmine
+env_file_path: .env_files
+redmine_db_adapter: mysql2
+datadog_site: "datadoghq.eu"
+redmine_port: "{{ lookup('env', 'REDMINE_EXTERNAL_PORT') }}"

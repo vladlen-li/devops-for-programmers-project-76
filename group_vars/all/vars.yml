@@ -1,0 +1,2 @@
+database_host: "{{ lookup('env', 'DATABASE_HOST') }}"
+database_name: "{{ lookup('env', 'DATABASE_NAME') }}"

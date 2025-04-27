@@ -2,20 +2,28 @@
   become: yes
   pre_tasks:
     - name: Apt update
+      tags:
+        - webservers
       apt:
         update_cache: yes
   tasks:
     - name: Create env directory
+      tags:
+        - webservers
       file:
         path: "{{ env_file_path }}"
         state: directory
         mode: '0755'
     - name: Generate .env file from template
+      tags:
+        - webservers
       template:
         src: templates/redmine.env.j2
         dest: "{{ env_file_path }}/redmine.env"
         mode: '0640'
     - name: Launch Redmine Container
+      tags:
+        - webservers
       docker_container:
         name: redmine
         image: "{{ redmine_image }}"
@@ -26,7 +34,27 @@
         env_file: "{{ env_file_path }}/redmine.env"
         volumes:
           - "/usr/src/redmine/files:/usr/src/redmine/files"
+    - name: Import the Datadog Agent role from the Datadog collection
+      import_role:
+        name: datadog.dd.agent
+      tags:
+        - webservers
+    - name: Generate health_check conf.yaml file from template
+      template:
+        src: templates/conf.yaml.j2
+        dest: "/etc/datadog-agent/conf.d/http_check.d/conf.yaml"
+        mode: '0640'
+    - name: Restart datadog agent
+      tags:
+        - webservers
+      systemd:
+        name: datadog-agent
+        state: restarted
 
   roles:
-    - geerlingguy.pip
-    - geerlingguy.docker
+    - role: geerlingguy.pip
+      tags:
+        - webservers
+    - role: geerlingguy.docker
+      tags:
+        - webservers
