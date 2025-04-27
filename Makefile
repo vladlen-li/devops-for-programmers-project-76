@@ -20,4 +20,4 @@ start: check_env ansible-dependencies ansible-deploy
 
 destroy: check_env ansible-destroy
 
-edit_secrets: check_env ansible-edit-secrets
+edit-secrets: check_env ansible-edit-secrets
