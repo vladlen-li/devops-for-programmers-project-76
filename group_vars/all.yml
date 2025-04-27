@@ -1,0 +1,5 @@
+redmine_image: redmine
+redmine_db_host: "{{ lookup('env', 'REDMINE_DB_HOST') }}"
+redmine_db_name: "{{ lookup('env', 'REDMINE_DB_NAME') }}"
+redmine_db_user: "{{ lookup('env', 'REDMINE_DB_USER') }}"
+redmine_db_password: "{{ lookup('env', 'REDMINE_DB_PASSWORD') }}"

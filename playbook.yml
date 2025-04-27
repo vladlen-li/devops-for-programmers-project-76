@@ -1,9 +1,30 @@
 - hosts: all
   become: yes
   pre_tasks:
-    - name: Обновление репозиториев
+    - name: Apt update
       apt:
         update_cache: yes
+  tasks:
+    - name: Pull the Redmine Docker image
+      docker_image:
+        name: "{{ redmine_image }}"
+        source: pull
+    - name: Launch Redmine Container
+      docker_container:
+        name: redmine
+        image: "{{ redmine_image }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "80:3000"
+        env:
+          REDMINE_DB_ADAPTER: mysql2
+          REDMINE_DB_HOST: "{{ lookup('env', 'REDMINE_DB_HOST') }}"
+          REDMINE_DB_NAME: "{{ lookup('env', 'REDMINE_DB_NAME') }}"
+          REDMINE_DB_USER: "{{ lookup('env', 'REDMINE_DB_USER') }}"
+          REDMINE_DB_PASSWORD: "{{ lookup('env', 'REDMINE_DB_PASSWORD') }}"
+        volumes:
+          - "/usr/src/redmine/files:/usr/src/redmine/files"
 
   roles:
     - geerlingguy.pip
