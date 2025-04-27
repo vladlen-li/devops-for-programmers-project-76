@@ -1,0 +1,10 @@
+- hosts: all
+  become: yes
+  pre_tasks:
+    - name: Обновление репозиториев
+      apt:
+        update_cache: yes
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker
