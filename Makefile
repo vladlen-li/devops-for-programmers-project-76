@@ -1,12 +1,15 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-make_checks:
+prepare_env:
 	./checks.sh
-dependencies:
+ansible-dependencies:
 	ansible-galaxy install -r requirements.yml
 
-prepare:
+ansible-deploy:
 	ansible-playbook -i inventory.ini playbook.yml
 
-start: make_checks dependencies prepare
+ansible-destroy:
+	ansible-playbook -i inventory.ini playbook-destroy.yml
+
+start: prepare_env ansible-dependencies ansible-deploy

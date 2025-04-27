@@ -1,0 +1,18 @@
+- name: Destroy Redmine containers
+  hosts: all
+  gather_facts: no
+  become: true
+
+  vars:
+    redmine_container_name: redmine
+    redmine_volume_name: redmine_files
+    env_file_path: /opt/redmine/.env
+    redmine_directory: /opt/redmine
+
+  tasks:
+    - name: Stop and remove Redmine container
+      community.docker.docker_container:
+        name: redmine
+        state: absent
+        force_kill: true
+      ignore_errors: true
