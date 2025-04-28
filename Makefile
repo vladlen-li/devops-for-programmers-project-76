@@ -1,3 +1,6 @@
+include .env
+export $(shell sed 's/=.*//' .env)
+
 ansible-dependencies:
 	ansible-galaxy install -r requirements.yml
 
