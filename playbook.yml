@@ -12,8 +12,8 @@
     - name: Generate .env file from template
       ansible.builtin.template:
         src: templates/redmine.env.j2
-        dest: "/tmp/redmine.env"
-        mode: '0640'
+        dest: ".env"
+        mode: '640'
     - name: Launch Redmine Container
       community.docker.docker_container:
         name: redmine
@@ -22,9 +22,17 @@
         restart_policy: always
         ports:
           - "{{ redmine_port }}:3000"
-        env_file: "/tmp/redmine.env"
+        env_file: ".env"
         volumes:
           - "/usr/src/redmine/files:/usr/src/redmine/files"
+    - name: Stop and remove Redmine container
+      community.docker.docker_container:
+        name: redmine
+        state: absent
+        force_kill: true
+      ignore_errors: true
+      tags:
+        - destroy
 
 - name: Configure Datadog Agent on Webservers
   hosts: webservers
