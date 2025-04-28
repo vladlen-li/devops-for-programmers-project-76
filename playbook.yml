@@ -30,7 +30,6 @@
         name: redmine
         state: absent
         force_kill: true
-      ignore_errors: true
       tags:
         - destroy
 
